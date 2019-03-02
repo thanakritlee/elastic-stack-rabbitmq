@@ -1,0 +1,59 @@
+version: '3'
+networks:
+  elasticstack-rabbitmq-network:
+
+services:
+
+  rabbitmq:
+    container_name: rabbitmq
+    hostname: rabbitmq
+    image: rabbitmq-mqtt:v1
+    environment: 
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    ports:
+      - 5672:5672     # AMQP port. Rich messaging for server.
+      - 15672:15672   # Management port, if plugin is enabled.
+      - 1883:1883     # MQTT port. Lightweight messaging for IoT.
+    networks: 
+      - elasticstack-rabbitmq-network
+
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    environment: 
+      - discovery.type=single-node
+    ports:
+      - 9300:9300
+      - 9200:9200
+    networks: 
+      - elasticstack-rabbitmq-network
+
+  logstash:
+    container_name: logstash
+    image: docker.elastic.co/logstash/logstash:6.6.1
+    volumes: 
+      - ./logstash-config:/usr/share/logstash/config-rabbitmq
+    command: logstash -f ./config-rabbitmq/logstash-rabbitmq.conf
+    ports:
+      - 9600:9600
+    networks: 
+      - elasticstack-rabbitmq-network
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:6.6.1
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    networks: 
+      - elasticstack-rabbitmq-network
+
+  nodered:
+    container_name: nodered
+    image: nodered/node-red-docker:v8
+    ports: 
+      - 1880:1880
+    networks: 
+      - elasticstack-rabbitmq-network
