@@ -24,8 +24,8 @@ services:
     environment: 
       - discovery.type=single-node
     ports:
-      - 9300:9300
-      - 9200:9200
+      - 9300:9300    # REST
+      - 9200:9200    # Node Communication
     networks: 
       - elasticstack-rabbitmq-network
 
