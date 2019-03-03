@@ -1,0 +1,57 @@
+[{
+  "id": "89242c63.c7e82",
+  "type": "tab",
+  "label": "Flow 1",
+  "disabled": false,
+  "info": ""
+}, {
+  "id": "2a41ba10.b32956",
+  "type": "inject",
+  "z": "89242c63.c7e82",
+  "name": "",
+  "topic": "mqtt_topic",
+  "payload": "{\"data\": \"hello world\"}",
+  "payloadType": "json",
+  "repeat": "",
+  "crontab": "",
+  "once": false,
+  "onceDelay": 0.1,
+  "x": 200,
+  "y": 120,
+  "wires": [
+    ["7dfea135.aa565"]
+  ]
+}, {
+  "id": "7dfea135.aa565",
+  "type": "mqtt out",
+  "z": "89242c63.c7e82",
+  "name": "",
+  "topic": "",
+  "qos": "",
+  "retain": "",
+  "broker": "42939a80.1fadd4",
+  "x": 430,
+  "y": 120,
+  "wires": []
+}, {
+  "id": "42939a80.1fadd4",
+  "type": "mqtt-broker",
+  "z": "",
+  "name": "",
+  "broker": "rb-mqtt",
+  "port": "1883",
+  "clientid": "",
+  "usetls": false,
+  "compatmode": true,
+  "keepalive": "60",
+  "cleansession": true,
+  "birthTopic": "",
+  "birthQos": "0",
+  "birthPayload": "",
+  "closeTopic": "",
+  "closeQos": "0",
+  "closePayload": "",
+  "willTopic": "",
+  "willQos": "0",
+  "willPayload": ""
+}]
