@@ -1,0 +1,208 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: thanakritlee.azurecr.io/rabbitmq-mqtt:v1
+        resources:
+        ports:
+        - containerPort: 5672     # AMQP port. Rich messaging for server.
+          name: rb-amqp
+        - containerPort: 15672    # Management port, if plugin is enabled.
+          name: rb-mngt
+        - containerPort: 1883     # MQTT port. Lightweight messaging for IoT.
+          name: rb-mqtt
+        env:
+          - name: RABBITMQ_DEFAULT_USER
+            value: "user"
+          - name: RABBITMQ_DEFAULT_PASS
+            value: "password"
+---        
+apiVersion: v1
+kind: Service
+metadata:
+  name: rb-amqp
+spec:
+  ports:
+  - port: 5672
+  selector:
+    app: rabbitmq
+---        
+apiVersion: v1
+kind: Service
+metadata:
+  name: rb-mngt
+spec:
+  ports:
+  - port: 15672
+  selector:
+    app: rabbitmq
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rb-mqtt
+spec:
+  ports:
+  - port: 1883
+  selector:
+    app: rabbitmq
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: logstash
+spec:
+  selector:
+    matchLabels:
+      app: logstash
+  template:
+    metadata:
+      labels:
+        app: logstash
+    spec:
+      containers:
+      - name: logstash
+        image: thanakritlee.azurecr.io/logstash-rabbitmq:v3
+        resources:
+        command: ["logstash", "-f", "./config-rabbitmq/logstash-rabbitmq-k8s.conf"]
+        ports:
+        - containerPort: 9600
+          name: logstash
+        env:
+          - name: XPACK_MONITORING_ELASTICSEARCH_URL
+            value: "http://elsrch-nd-comm:9200"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash
+spec:
+  ports:
+  - port: 9600
+  selector:
+    app: logstash
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: elasticsearch
+spec:
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+        resources:
+        ports:
+        - containerPort: 9300       # REST 
+          name: elsrch-rest
+        - containerPort: 9200       # Node Communication
+          name: elsrch-nd-comm
+        env:
+          - name: discovery.type
+            value: "single-node"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elsrch-rest
+spec:
+  ports:
+  - port: 9300
+  selector:
+    app: elasticsearch
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elsrch-nd-comm
+spec:
+  ports:
+  - port: 9200
+  selector:
+    app: elasticsearch
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: kibana
+spec:
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:6.6.1
+        resources:
+        ports:
+        - containerPort: 5601
+          name: kibana
+        env:
+        - name: ELASTICSEARCH_URL
+          value: "http://elsrch-nd-comm:9200"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5601
+  selector:
+    app: kibana
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: nodered
+spec:
+  selector:
+    matchLabels:
+      app: nodered
+  template:
+    metadata:
+      labels:
+        app: nodered
+    spec:
+      containers:
+      - name: nodered
+        image: nodered/node-red-docker:v8
+        resources:
+        ports:
+        - containerPort: 1880
+          name: nodered
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodered
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 1880
+  selector:
+    app: nodered
