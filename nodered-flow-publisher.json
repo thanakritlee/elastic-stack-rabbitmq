@@ -1,7 +1,7 @@
 [{
   "id": "29c39c05.b82344",
   "type": "tab",
-  "label": "Flow 1",
+  "label": "RabbitMQ Publisher Docker Compose",
   "disabled": false,
   "info": ""
 }, {

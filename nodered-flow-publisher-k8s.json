@@ -1,7 +1,7 @@
 [{
   "id": "89242c63.c7e82",
   "type": "tab",
-  "label": "Flow 1",
+  "label": "RabbitMQ Publisher Kubernetes",
   "disabled": false,
   "info": ""
 }, {
