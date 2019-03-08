@@ -32,7 +32,7 @@ resource "azurerm_public_ip" "myterraformpublicip" {
   name                 = "myPublicIP"
   location             = "southeastasia"
   resource_group_name  = "${azurerm_resource_group.myterraformgroup.name}"
-  allocation_method    = "dynamic"
+  allocation_method    = "Dynamic"
 
   tags {
     environment = "Terraform Demo"
@@ -62,7 +62,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 }
 
 resource "azurerm_network_interface" "myterraformnic" {
-  name                        = "myNicConfiguration"
+  name                        = "myNIC"
   location                    = "southeastasia"
   resource_group_name         = "${azurerm_resource_group.myterraformgroup.name}"
   network_security_group_id   = "${azurerm_network_security_group.myterraformnsg.id}"
@@ -131,7 +131,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     disable_password_authentication = true
     ssh_keys {
       path     = "/home/azureuser/.ssh/authorized_keys"
-      key_data = "ssh-rsa AAAAB3Nz{snip}hwhqT9h"
+      key_data = "{id_rsa.pub}"
     }
   }
 
