@@ -47,16 +47,16 @@ The following command below is use for:
 
 ```sh
 $ az group create --name elasticStackRabbitMQ --location southeastasia
-$ az acr create --resource-group elasticStackRabbitMQ --name thanakritlee --sku Basic
+$ az acr create --resource-group elasticStackRabbitMQ --name <containerRegistryName> --sku Basic
 $ az acr list --resource-group elasticStackRabbitMQ --query "[].{acrLoginServer:loginServer}" --output table
 $ az acr login --name <acrName>
-$ docker tag rabbitmq-mqtt:v1 thanakritlee.azurecr.io/rabbitmq-mqtt:v1
-$ docker push thanakritlee.azurecr.io/rabbitmq-mqtt:v1
-$ docker tag logstash-rabbitmq:v1 thanakritlee.azurecr.io/logstash-rabbitmq:v1
-$ docker push thanakritlee.azurecr.io/logstash-rabbitmq:v1
-$ az acr repository list --name thanakritlee --output table
-$ az acr repository show-tags --name thanakritlee --repository logstash-rabbitmq --output table
-$ az acr repository show-tags --name thanakritlee --repository rabbitmq-mqtt --output table
+$ docker tag rabbitmq-mqtt:v1 <acrName>/rabbitmq-mqtt:v1
+$ docker push <acrName>/rabbitmq-mqtt:v1
+$ docker tag logstash-rabbitmq:v1 <acrName>/logstash-rabbitmq:v1
+$ docker push <acrName>/logstash-rabbitmq:v1
+$ az acr repository list --name <containerRegistryName> --output table
+$ az acr repository show-tags --name <containerRegistryName> --repository logstash-rabbitmq --output table
+$ az acr repository show-tags --name <containerRegistryName> --repository rabbitmq-mqtt --output table
 $ az ad sp create-for-rbac --skip-assignment
 $ az acr show --resource-group elasticStackRabbitMQ --name <containerRegistryName> --query "id" --output tsv
 $ az role assignment create --assignee <appId> --scope <acrId> --role acrpull
