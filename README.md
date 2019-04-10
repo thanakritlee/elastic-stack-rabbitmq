@@ -22,7 +22,7 @@ An application is first dockerised and tested locally using Docker Compose to or
 To run the Dev environment, a custom RabbitMQ docker image must be created first. At the root directory of the project run the following code below to create and tag a RabbitMQ image:
 
 ```sh
-$ docker build -t rabbitmq-mqtt:v1 -f Dockerfile.RabbitMQ .
+$ docker build -t rabbitmq-mqtt:v1 -f RabbitMQ.Dockerfile .
 ```
 
 ## Production Environment (Prod)
@@ -32,7 +32,7 @@ The Prod environment will be deployed to a Kubernetes (k8s) cluster on Azure.
 In the production environment a customer LogStash docker image must be created to include the config file for RabbitMQ input of LogStash. At the root directory of the project run the following code below to create and tag a LogStash image:
 
 ```sh
-$ docker build -t logstash-rabbitmq:v1 -f Dockerfile.Logstash .
+$ docker build -t logstash-rabbitmq:v1 -f Logstash.Dockerfile .
 ```
 
 The following command below is use for:
